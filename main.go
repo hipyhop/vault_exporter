@@ -9,7 +9,8 @@ import (
   "time"
 )
 
-var addr = flag.String("listen-address", ":9014", "The address to listen on for HTTP requests.")
+var addr = flag.String("listen-address", ":9410", "The address to listen on for HTTP requests.")
+var checkInterval = flag.Int("check-interval", 20, "How frequently, in seconds, to check vault metrics.")
 
 var (
   vaultSealedGauge = prometheus.NewGauge(prometheus.GaugeOpts{
@@ -22,9 +23,13 @@ var (
 func main() {
   flag.Parse()
 
+  // Fake vault status
   go func() {
-    vaultSealedGauge.Set(1)
-    time.Sleep(5 * time.Second)
+    sleepDuration := time.Duration(*checkInterval) * time.Second
+    for {
+      vaultSealedGauge.Set(1)
+      time.Sleep(sleepDuration)
+    }
   }()
 
   http.Handle("/metrics", promhttp.Handler())
