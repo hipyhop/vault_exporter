@@ -43,6 +43,9 @@ func main() {
     }
   }()
 
+  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, `<h1>vault-exporter</h1><a href="/metrics">/metrics</a>`)
+  })
   http.Handle("/metrics", promhttp.Handler())
   log.Fatal(http.ListenAndServe(*addr, nil))
 }
