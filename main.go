@@ -54,11 +54,8 @@ func collectMetrics(v *vaultApi.Client) {
     fmt.Printf("Failed to check vault health: %s\n", err)
     return
   }
-  if health.Sealed {
-    vaultSealedGauge.Set(1)
-  } else {
-    vaultSealedGauge.Set(0)
-  }
+
+  vaultSealedGauge.Set(bool2Float64(health.Sealed))
 }
 
 func initVaultClient() (*vaultApi.Client, error) {
@@ -66,6 +63,13 @@ func initVaultClient() (*vaultApi.Client, error) {
   // Configure with ENV vars
 
   return vaultApi.NewClient(vaultConfig)
+}
+
+func bool2Float64(b bool)(float64) {
+  if b {
+    return 1
+  }
+  return 0
 }
 
 func init() {
