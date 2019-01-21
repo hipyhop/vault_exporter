@@ -35,7 +35,6 @@ func main() {
     log.Fatal(err)
   }
 
-  // Fake vault status
   go func() {
     sleepDuration := time.Duration(*checkInterval) * time.Second
     for {
